@@ -12,7 +12,7 @@ env:
 
 jobs:
   check:
-    name: Format, lint, and test
+    name: Check and build
     runs-on: ubuntu-latest
 
     steps:
@@ -23,30 +23,6 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt, clippy
-
-      - name: Check formatting
-        run: cargo fmt --check
-
-      - name: Run clippy
-        run: cargo clippy --all-targets -- -D warnings
-
-      - name: Run tests
-        run: cargo test
-
-      - name: Build release binary
-        run: cargo build --release --locked
-
-  linux-aarch64:
-    name: Build Linux arm64
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
           targets: aarch64-unknown-linux-gnu
 
       - name: Install cross compiler
@@ -62,5 +38,17 @@ jobs:
           linker = "aarch64-linux-gnu-gcc"
           EOF
 
-      - name: Build release binary
+      - name: Check formatting
+        run: cargo fmt --check
+
+      - name: Run clippy
+        run: cargo clippy --all-targets -- -D warnings
+
+      - name: Run tests
+        run: cargo test
+
+      - name: Build Linux x86_64 release binary
+        run: cargo build --release --locked
+
+      - name: Build Linux arm64 release binary
         run: cargo build --target aarch64-unknown-linux-gnu --release --locked
