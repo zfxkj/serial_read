@@ -65,4 +65,4 @@ jobs:
           prerelease: false
           md5sum: true
           sha256sum: true
-          token: ${{ secrets.GITEA_TOKEN }}
+          token: ${{ secrets.TOKEN }}
