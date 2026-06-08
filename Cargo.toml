@@ -1,0 +1,9 @@
+[package]
+name = "serial_read"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serialport = { version = "4.5.0", default-features = false }
+clap = { version = "4.5.20", features = ["derive"] }
+hex = "0.4.3"
