@@ -222,7 +222,32 @@ sudo usermod -aG dialout $USER
 
 加入用户组后通常需要重新登录才会生效。
 
-## 构建
+## 下载发布版
+
+项目通过 Gitea Actions 在推送版本标签时自动构建发布版。
+
+每个 Release 会直接提供可执行文件附件，不再额外压缩打包：
+
+| 文件名示例 | 适用平台 |
+| --- | --- |
+| `serial_read-v0.1.0-linux-x86_64` | Linux x86_64 |
+| `serial_read-v0.1.0-linux-aarch64` | Linux arm64 / aarch64 |
+
+下载后需要添加执行权限：
+
+```bash
+chmod +x serial_read-v0.1.0-linux-x86_64
+```
+
+运行示例：
+
+```bash
+./serial_read-v0.1.0-linux-x86_64 -h
+```
+
+如果是在 arm64 设备上使用，请下载 `linux-aarch64` 后缀的文件。
+
+## 本地构建
 
 ### 本机调试构建
 
@@ -477,6 +502,30 @@ cargo run -- --help
 cargo build --target aarch64-unknown-linux-gnu --release
 ```
 
+## 发布流程
+
+仓库包含 Gitea Actions 发布工作流：
+
+```text
+.github/workflows/release.yml
+```
+
+当推送 `v*` 格式的 Git 标签时，会自动执行以下步骤：
+
+1. 构建 Linux x86_64 发布版。
+2. 交叉构建 Linux arm64 / aarch64 发布版。
+3. 生成两个可直接运行的 Release 附件。
+4. 使用 Gitea Release Action 创建 Release，并上传附件和校验和。
+
+发版示例：
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+如果需要重新发布同一个版本，建议先在 Gitea 页面删除对应 Release 和标签，再重新创建标签并推送。
+
 ## 当前限制
 
 - 当前只支持 `8N1` 串口配置。
@@ -484,4 +533,3 @@ cargo build --target aarch64-unknown-linux-gnu --release
 - 当前不支持按协议结束符停止读取，只支持总超时和部分数据超时。
 - 当前普通文本模式按 ASCII 处理，不按 UTF-8 处理。
 - 当前输出到标准输出，不支持写入文件。
-
