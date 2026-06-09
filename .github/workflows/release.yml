@@ -57,7 +57,7 @@ jobs:
         run: ls -lh dist
 
       - name: Create Gitea release and upload assets
-        uses: https://gitea.com/actions/gitea-release-action@v1
+        uses: akkuman/gitea-release-action@v1
         with:
           files: |-
             dist/${{ env.BIN_NAME }}-${{ github.ref_name }}-linux-*
